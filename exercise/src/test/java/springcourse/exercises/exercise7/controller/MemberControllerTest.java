@@ -111,7 +111,7 @@ public class MemberControllerTest {
     public void testReturnBooks() throws Exception {
         String memberId = "1";
         String catalogId = "2";
-        this.mockMvc.perform(delete("/members/{memberId}/books/{catalogId}", memberId, catalogId)).
+        this.mockMvc.perform(delete("/members/{memberId}/loanedBooks/{catalogId}", memberId, catalogId)).
                 andExpect(status().isOk()).
                 andDo(print());
         verify(library).returnBook(eq(catalogId), eq(memberId));
