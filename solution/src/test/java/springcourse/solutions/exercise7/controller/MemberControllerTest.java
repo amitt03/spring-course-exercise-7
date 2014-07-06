@@ -1,7 +1,6 @@
-package springcourse.exercises.exercise7.controller;
+package springcourse.solutions.exercise7.controller;
 
 import com.google.gson.Gson;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -10,16 +9,15 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import springcourse.exercises.exercise7.model.Member;
-import springcourse.exercises.exercise7.service.api.ILibrary;
+import springcourse.solutions.exercise7.model.Book;
+import springcourse.solutions.exercise7.model.Member;
+import springcourse.solutions.exercise7.service.api.ILibrary;
 
 import java.util.ArrayList;
 
 import static com.jayway.jsonassert.impl.matcher.IsCollectionWithSize.hasSize;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -69,7 +67,7 @@ public class MemberControllerTest {
                 accept(MediaType.APPLICATION_JSON)).
                 andExpect(status().isCreated()).
                 andExpect(jsonPath("$.memberId").exists()).
-                andExpect(jsonPath("$.books", hasSize(0))).
+                andExpect(jsonPath("$.loanedBooks", hasSize(0))).
                 andDo(print());
         verify(library).createMembership(member);
     }
@@ -92,19 +90,23 @@ public class MemberControllerTest {
     public void testLoanBook() throws Exception {
         String memberId = "1";
         String catalogId = "2";
-        // TODO Complete test (include verification that correct service api is called
-        // TODO Complete test (include verification that correct service api is called
-        // TODO Complete test (include verification that correct service api is called
-        Assert.fail(); // Remove this when test is implemented
+        when(library.loanBook(eq(catalogId), eq(memberId))).thenReturn(new Book("stam", "book"));
+        this.mockMvc.perform(post("/members/{memberId}/loanedBooks", memberId).
+                content(catalogId)).
+                andExpect(status().isCreated()).
+                andDo(print());
+        verify(library).loanBook(eq(catalogId), eq(memberId));
     }
 
     @Test
     public void testReadAllLoanedBooks() throws Exception {
         String memberId = "1";
-        // TODO Complete test (include verification that correct service api is called
-        // TODO Complete test (include verification that correct service api is called
-        // TODO Complete test (include verification that correct service api is called
-        Assert.fail(); // Remove this when test is implemented
+        when(library.getLoanedBooks(eq(memberId))).thenReturn(new ArrayList<Book>());
+        this.mockMvc.perform(get("/members/{memberId}/loanedBooks", memberId)).
+                andExpect(status().isOk()).
+                andExpect(jsonPath("$").isArray()).
+                andDo(print());
+        verify(library).getLoanedBooks(eq(memberId));
     }
 
     @Test
@@ -112,7 +114,7 @@ public class MemberControllerTest {
         String memberId = "1";
         String catalogId = "2";
         this.mockMvc.perform(delete("/members/{memberId}/loanedBooks/{catalogId}", memberId, catalogId)).
-                andExpect(status().isOk()).
+                andExpect(status().isNoContent()).
                 andDo(print());
         verify(library).returnBook(eq(catalogId), eq(memberId));
     }
