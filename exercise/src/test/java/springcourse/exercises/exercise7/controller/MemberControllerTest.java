@@ -69,7 +69,7 @@ public class MemberControllerTest {
                 accept(MediaType.APPLICATION_JSON)).
                 andExpect(status().isCreated()).
                 andExpect(jsonPath("$.memberId").exists()).
-                andExpect(jsonPath("$.books", hasSize(0))).
+                andExpect(jsonPath("$.loanedBooks", hasSize(0))).
                 andDo(print());
         verify(library).createMembership(member);
     }
