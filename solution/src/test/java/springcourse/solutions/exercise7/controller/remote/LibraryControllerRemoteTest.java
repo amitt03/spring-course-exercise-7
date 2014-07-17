@@ -97,7 +97,7 @@ public class LibraryControllerRemoteTest {
     }
 
     private Collection<Book> readBooksByAuthor(String author) {
-        Book[] response = restTemplate.getForObject(baseUrl + "/books?author=" + author, Book[].class);
+        Book[] response = restTemplate.getForObject(baseUrl + "/books?author={author}", Book[].class, author);
         return Arrays.asList(response);
     }
 
