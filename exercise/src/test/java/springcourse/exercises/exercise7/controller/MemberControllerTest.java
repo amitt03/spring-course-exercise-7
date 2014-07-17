@@ -112,7 +112,7 @@ public class MemberControllerTest {
         String memberId = "1";
         String catalogId = "2";
         this.mockMvc.perform(delete("/members/{memberId}/loanedBooks/{catalogId}", memberId, catalogId)).
-                andExpect(status().isOk()).
+                andExpect(status().isNoContent()).
                 andDo(print());
         verify(library).returnBook(eq(catalogId), eq(memberId));
     }
